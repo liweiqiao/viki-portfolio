@@ -230,10 +230,10 @@ export const site = {
     eyebrow: '联系',
     title: '有话想聊，\n随时写信',
     lede: '选题合作、内容共创、公益项目宣推都可以。写得具体一点，我回得也会具体一点。',
-    email: 'hello@example.com', // TODO 换成真实邮箱
+    email: 'aaaaa@qq.com',
     wechatLabel: '微信', // TODO 换成真实微信号
     wechat: 'your-wechat-id',
-    primaryCta: { label: '写封邮件', href: 'mailto:hello@example.com' }, // TODO 同步替换
+    primaryCta: { label: '写封邮件', href: 'mailto:aaaaa@qq.com' },
     secondaryCta: { label: '回到顶部', href: '#top' }
   },
 
