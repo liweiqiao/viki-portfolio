@@ -1,0 +1,436 @@
+/* ==========================================================================
+   Base — 全局重置、排版基线、可复用组件类
+   规则来源：DESIGN.md 的 Do's / Don'ts
+   · 只用色块 + 1px 描边分层，不堆阴影
+   · 纯黑不出现，文字一律 Forest Ink
+   · Highlighter Yellow 只做文字涂抹，不做按钮底色
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* 悬浮导航高度 + 呼吸空间，避免锚点跳转被盖住 */
+  scroll-padding-top: 120px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-cream-paper);
+  color: var(--color-forest-ink);
+  font-family: var(--font-inter);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--color-forest-ink);
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+::selection {
+  background-color: var(--color-highlighter-yellow);
+  color: var(--color-forest-ink);
+}
+
+/* ---------- 焦点可见性（无障碍，仍沿用绿色体系） ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-forest-ink);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   布局容器
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-40);
+}
+
+.section {
+  padding: var(--spacing-96) 0;
+}
+
+/* ==========================================================================
+   排版 —— 展示级标题
+   Bricolage Grotesque 800 + 正字距；中文由 Noto Sans SC 900 承接
+   ========================================================================== */
+
+.display {
+  font-family: var(--font-bricolage-grotesque);
+  font-size: var(--text-display);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.title-lg {
+  font-family: var(--font-bricolage-grotesque);
+  font-size: var(--text-heading-lg);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: var(--tracking-heading-lg);
+}
+
+.title {
+  font-family: var(--font-bricolage-grotesque);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* 中文标题：字重拉到 900 复刻 Bricolage 的块状体量 */
+.title-cn,
+.display-cn {
+  font-family: var(--font-display-cn);
+  font-weight: 900;
+  letter-spacing: var(--tracking-cn);
+}
+
+.title-sm {
+  font-family: var(--font-bricolage-grotesque);
+  font-size: var(--text-heading-sm);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--leading-heading-sm);
+  letter-spacing: 2px;
+}
+
+.subheading {
+  font-family: var(--font-inter);
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-subheading);
+}
+
+.section-title {
+  font-family: var(--font-display-cn);
+  font-size: var(--text-heading-sm);
+  font-weight: 900;
+  line-height: var(--leading-heading-sm);
+  letter-spacing: var(--tracking-cn);
+}
+
+.lede {
+  font-size: var(--text-body-lg);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-body-lg);
+  max-width: 620px;
+}
+
+.body-text {
+  font-size: var(--text-body);
+  line-height: 1.62;
+}
+
+.muted {
+  color: var(--color-pencil-gray);
+}
+
+/* ---------- Highlighter Yellow：马克笔涂抹 ---------- */
+.hl {
+  background-color: var(--color-highlighter-yellow);
+  padding: 0 0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* ==========================================================================
+   Mono 微标签 / 胶囊
+   ========================================================================== */
+
+.mono-label {
+  font-family: var(--font-roboto-mono);
+  font-size: var(--text-micro);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: var(--leading-micro);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-tags);
+  border: 1px solid var(--color-pencil-gray);
+  background-color: transparent;
+  font-family: var(--font-roboto-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-forest-ink);
+  white-space: nowrap;
+}
+
+/* 眉标徽章 —— 黄色底 + 小图标 + 12-14px Inter 500 */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-highlighter-yellow);
+  font-family: var(--font-inter);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-forest-ink);
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   按钮
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-buttons);
+  font-family: var(--font-inter);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-body-sm);
+  line-height: 1;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+/* Primary CTA —— Forest Ink 填充 + 前置箭头 */
+.btn-primary {
+  padding: 19px 40px;
+  background-color: var(--color-forest-ink);
+  color: var(--color-cream-paper);
+  box-shadow: var(--shadow-subtle);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-subtle-2);
+}
+
+.btn-primary .arrow {
+  transition: transform 0.18s ease;
+}
+
+.btn-primary:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* 紧凑版主按钮 */
+.btn-primary.btn-sm {
+  padding: 12px 20px;
+  font-size: var(--text-caption);
+}
+
+/* Outline —— 透明填充 + 1px Forest Ink */
+.btn-outline {
+  padding: 9px 18px;
+  border: 1px solid var(--color-forest-ink);
+  color: var(--color-forest-ink);
+  font-size: var(--text-caption);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-forest-ink);
+  color: var(--color-cream-paper);
+}
+
+.btn-outline.btn-lg {
+  padding: 17px 32px;
+  font-size: var(--text-body-sm);
+}
+
+/* 大号 Outline（Hero 次按钮用） */
+.btn-ghost {
+  padding: 18px 34px;
+  border: 1px solid var(--color-forest-ink);
+  color: var(--color-forest-ink);
+  font-size: var(--text-body-sm);
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-forest-ink);
+  color: var(--color-cream-paper);
+}
+
+/* 糖果色按钮 —— 仅用于次级路径 */
+.btn-pastel {
+  padding: 12px 22px;
+  color: var(--color-forest-ink);
+  font-size: var(--text-caption);
+  border: 1px solid var(--color-forest-ink);
+}
+
+/* ==========================================================================
+   便签卡片
+   12–16px 圆角 / 24–28px 内边距 / 无阴影，靠色块与描边分层
+   ========================================================================== */
+
+.note-card {
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-32);
+  background-color: var(--color-cream-paper);
+  border: 1px solid var(--color-forest-ink);
+}
+
+.note-mint {
+  background-color: var(--color-sticky-note-mint);
+}
+.note-blush {
+  background-color: var(--color-sticky-note-blush);
+}
+.note-teal {
+  background-color: var(--color-sticky-note-teal);
+}
+.note-yellow {
+  background-color: var(--color-highlighter-yellow);
+}
+.note-cream {
+  background-color: var(--color-cream-paper);
+}
+
+/* ---------- 手绘草图装饰 ---------- */
+.sketch {
+  position: absolute;
+  color: #000;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   入场动效 —— 尊重系统「减少动态效果」设置
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .btn,
+  .btn-primary .arrow {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   响应式
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  :root {
+    --text-display: 72px;
+    --text-heading-lg: 54px;
+    --text-heading: 44px;
+    --text-heading-sm: 34px;
+    --text-subheading: 24px;
+  }
+  .section {
+    padding: var(--spacing-80) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --text-display: 52px;
+    --text-heading-lg: 40px;
+    --text-heading: 34px;
+    --text-heading-sm: 28px;
+    --text-subheading: 22px;
+    --tracking-display: 2px;
+    --tracking-heading-lg: 1.6px;
+    --tracking-heading: 1.2px;
+  }
+  .container {
+    padding: 0 var(--spacing-24);
+  }
+  .section {
+    padding: var(--spacing-64) 0;
+  }
+  .lede {
+    font-size: var(--text-body);
+  }
+  .btn-primary,
+  .btn-ghost {
+    padding: 16px 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --text-display: 40px;
+    --text-heading-lg: 33px;
+    --text-heading: 28px;
+    --text-heading-sm: 24px;
+  }
+  .container {
+    padding: 0 var(--spacing-16);
+  }
+  .note-card {
+    padding: var(--spacing-24);
+  }
+}
