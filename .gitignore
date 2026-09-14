@@ -20,3 +20,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# 个人资料 —— 仓库是公开的，简历含手机号等隐私信息，不要提交
+我的作品/
+*个人简历*
+*简历*.pdf
+
+# 本地工作记录（AI 记忆、笔记），不上传
+.workbuddy/

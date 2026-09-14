@@ -7,65 +7,74 @@
         <p class="lede works-lede">{{ works.lede }}</p>
       </header>
 
-      <!-- 筛选 -->
-      <div class="works-filters reveal" role="tablist" aria-label="作品分类筛选">
-        <button
-          v-for="f in works.filters"
-          :key="f.key"
-          type="button"
-          role="tab"
-          :aria-selected="String(active === f.key)"
-          :class="['filter', { 'filter-active': active === f.key }]"
-          @click="active = f.key"
-        >
-          {{ f.label }}
-          <span class="filter-count">{{ countOf(f.key) }}</span>
-        </button>
-      </div>
-
-      <!-- 网格 -->
-      <ul class="works-grid">
+      <!-- ---------- 作品集：扫码查看 ---------- -->
+      <ul class="collection-grid">
         <li
-          v-for="item in filtered"
-          :key="item.id"
-          class="work-card"
-          :data-tone="item.tone"
+          v-for="(c, i) in works.collections"
+          :key="c.id"
+          class="collection-card reveal"
+          :style="{ transitionDelay: `${i * 100}ms` }"
         >
-          <div class="card-tags">
-            <span class="card-tag card-tag-solid">{{ item.platform }}</span>
-            <span class="card-tag">{{ item.type }}</span>
-            <span class="card-tag">{{ item.topic }}</span>
+          <figure class="qr-frame">
+            <img class="qr-img" :src="c.qr" :alt="`${c.label}二维码`" />
+            <figcaption class="qr-hint mono-label">扫码查看</figcaption>
+          </figure>
+
+          <div class="collection-body">
+            <span class="mono-label collection-meta">{{ c.meta }}</span>
+            <h3 class="collection-title">{{ c.label }}</h3>
+            <p class="collection-desc">{{ c.desc }}</p>
+
+            <ul class="collection-tags">
+              <li v-for="t in c.tags" :key="t" class="tag">{{ t }}</li>
+            </ul>
+
+            <a class="card-link" :href="c.href" target="_blank" rel="noopener noreferrer">
+              <span class="mono-label">也可以点这里打开</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
           </div>
-
-          <h3 class="card-title">{{ item.title }}</h3>
-          <p class="card-desc">{{ item.desc }}</p>
-
-          <a v-if="item.link" class="card-link" :href="item.link">
-            <span class="mono-label">查看</span>
-            <span class="arrow" aria-hidden="true">→</span>
-          </a>
-          <span v-else class="card-foot mono-label">{{ item.categoryLabel || '原创内容' }}</span>
         </li>
       </ul>
+
+      <!-- ---------- 视频作品：预留位 ---------- -->
+      <div class="video-block reveal">
+        <header class="video-head">
+          <span class="mono-label video-eyebrow">{{ works.videos.eyebrow }}</span>
+          <h3 class="video-title">{{ works.videos.title }}</h3>
+          <p class="video-note">{{ works.videos.note }}</p>
+        </header>
+
+        <ul class="video-grid">
+          <li v-for="s in works.videos.slots" :key="s.id" class="video-slot">
+            <!-- 填了 src 就自动变成播放器，没填则显示预留位 -->
+            <video
+              v-if="s.src"
+              class="video-el"
+              :src="s.src"
+              :poster="s.poster || undefined"
+              controls
+              preload="metadata"
+            ></video>
+
+            <div v-else class="video-placeholder">
+              <span class="video-badge mono-label">待补充</span>
+              <span class="video-plus" aria-hidden="true">+</span>
+              <span class="video-hint">{{ s.hint }}</span>
+            </div>
+
+            <p class="video-caption">{{ s.label }}</p>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
 import { site } from '../data/content.js'
 
 const { works } = site
-const active = ref('all')
-
-const filtered = computed(() =>
-  active.value === 'all' ? works.items : works.items.filter((i) => i.category === active.value)
-)
-
-function countOf(key) {
-  if (key === 'all') return works.items.length
-  return works.items.filter((i) => i.category === key).length
-}
 </script>
 
 <style scoped>
@@ -91,58 +100,17 @@ function countOf(key) {
   max-width: 560px;
 }
 
-/* ---------- 筛选胶囊 ---------- */
-.works-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: var(--spacing-40);
-}
-
-.filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  border-radius: var(--radius-tags);
-  border: 1px solid var(--color-pencil-gray);
-  background-color: transparent;
-  font-family: var(--font-inter);
-  font-size: var(--text-caption);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-forest-ink);
-  transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.filter:hover {
-  border-color: var(--color-forest-ink);
-}
-
-/* 选中态用 Forest Ink 填充，呼应主色权威 */
-.filter-active {
-  background-color: var(--color-forest-ink);
-  border-color: var(--color-forest-ink);
-  color: var(--color-cream-paper);
-}
-
-.filter-count {
-  font-family: var(--font-roboto-mono);
-  font-size: 11px;
-  opacity: 0.6;
-}
-
-/* ---------- 卡片网格 ---------- */
-.works-grid {
+/* ---------- 作品集卡片 ---------- */
+.collection-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-24);
 }
 
-.work-card {
+.collection-card {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-24);
   padding: var(--card-padding);
   border-radius: var(--radius-cards);
   border: 1px solid var(--color-forest-ink);
@@ -153,36 +121,49 @@ function countOf(key) {
 }
 
 /* hover 不用阴影，靠位移与底色变化做反馈 */
-.work-card:hover {
+.collection-card:hover {
   transform: translateY(-4px);
   background-color: #f8f5ee;
 }
 
-.card-tags {
+/* 二维码托盘：白底 + 细描边，保证静区不被背景吃掉 */
+.qr-frame {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: var(--spacing-24);
-}
-
-.card-tag {
-  padding: 4px 10px;
-  border-radius: var(--radius-tags);
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 150px;
+  padding: 12px 12px 10px;
+  margin: 0;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--color-pencil-gray);
-  font-family: var(--font-roboto-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.05em;
-  color: var(--color-forest-ink);
-  opacity: 0.75;
+  background-color: #fff;
 }
 
-.card-tag-solid {
-  background-color: var(--color-highlighter-yellow);
-  border-color: var(--color-highlighter-yellow);
-  opacity: 1;
+.qr-img {
+  width: 100%;
+  height: auto;
+  /* 二维码是 1:1 方图，先占好位免得加载时抖一下 */
+  aspect-ratio: 1 / 1;
 }
 
-.card-title {
+.qr-hint {
+  color: var(--color-pencil-gray);
+}
+
+.collection-body {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.collection-meta {
+  display: block;
+  color: var(--color-pencil-gray);
+  margin-bottom: var(--spacing-8);
+}
+
+.collection-title {
   font-family: var(--font-inter);
   font-size: 22px;
   font-weight: var(--font-weight-semibold);
@@ -191,11 +172,17 @@ function countOf(key) {
   margin-bottom: var(--spacing-16);
 }
 
-.card-desc {
+.collection-desc {
   font-size: var(--text-body-sm);
   line-height: 1.6;
   color: #3c4a2c;
-  flex-grow: 1;
+}
+
+.collection-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--spacing-16);
 }
 
 .card-link {
@@ -214,45 +201,128 @@ function countOf(key) {
   transform: translateX(4px);
 }
 
-.card-foot {
-  margin-top: var(--spacing-24);
+/* ---------- 视频作品 ---------- */
+.video-block {
+  margin-top: var(--spacing-80);
+  padding-top: var(--spacing-40);
+  border-top: 1px solid var(--color-pencil-gray);
+}
+
+.video-head {
+  margin-bottom: var(--spacing-32);
+}
+
+.video-eyebrow {
+  display: block;
+  color: var(--color-pencil-gray);
+  margin-bottom: var(--spacing-16);
+}
+
+.video-title {
+  font-family: var(--font-inter);
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.25;
+  margin-bottom: var(--spacing-8);
+}
+
+.video-note {
+  font-size: var(--text-caption);
   color: var(--color-pencil-gray);
 }
 
-/* 卡片入场：筛选切换时新出现的卡片重播，不必重建整个列表 */
-@keyframes cardIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-24);
 }
 
-.work-card {
-  animation: cardIn 0.32s ease backwards;
+.video-slot {
+  display: flex;
+  flex-direction: column;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .work-card {
-    animation: none;
-  }
+/* 预留位：虚线框，明确表达「这里以后会有东西」 */
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-cards);
+  border: 1px dashed var(--color-pencil-gray);
+  background-color: #faf8f2;
 }
 
+.video-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-tags);
+  background-color: var(--color-whisper-gray);
+  color: var(--color-pencil-gray);
+}
+
+.video-plus {
+  font-family: var(--font-bricolage-grotesque);
+  font-size: 26px;
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1;
+  color: var(--color-pencil-gray);
+}
+
+.video-hint {
+  font-size: 12px;
+  color: var(--color-pencil-gray);
+}
+
+.video-el {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-cards);
+  border: 1px solid var(--color-forest-ink);
+  background-color: #000;
+  object-fit: cover;
+}
+
+.video-caption {
+  margin-top: var(--spacing-16);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ---------- 响应式 ---------- */
 @media (max-width: 1024px) {
-  .works-grid {
+  .collection-grid {
+    grid-template-columns: 1fr;
+  }
+  .video-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
-  .works-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .video-block {
+    margin-top: var(--spacing-48);
   }
-  .card-title {
+}
+
+@media (max-width: 640px) {
+  .collection-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .collection-body {
+    width: 100%;
+  }
+  .collection-tags {
+    justify-content: center;
+  }
+  .collection-title {
     font-size: 20px;
+  }
+  .video-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
