@@ -37,8 +37,8 @@
             <span class="meta-value">{{ contact.email }}</span>
           </li>
           <li>
-            <span class="mono-label">{{ contact.wechatLabel }}</span>
-            <span class="meta-value">{{ contact.wechat }}</span>
+            <span class="mono-label">{{ contact.phoneLabel }}</span>
+            <span class="meta-value">{{ contact.phone }}</span>
           </li>
         </ul>
       </div>
